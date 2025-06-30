@@ -14,15 +14,18 @@ use crate::{
     simplify::ConcatElement,
     ExprRef, Regex,
 };
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct RegexBuilder {
     parser_builder: ParserBuilder,
     exprset: ExprSet,
     json_quote_cache: HashMap<ExprRef, ExprRef>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct JsonQuoteOptions {
     /// Which escapes to allow (after \).
     /// Represents a set of bytes. Allowed bytes:
@@ -72,7 +75,8 @@ impl JsonQuoteOptions {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub enum RegexAst {
     /// Intersection of the regexes
     And(Vec<RegexAst>),

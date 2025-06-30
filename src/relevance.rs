@@ -9,6 +9,7 @@ use crate::{
     simplify::{ConcatElement, OwnedConcatElement},
     NextByte,
 };
+use serde::{Deserialize, Serialize};
 
 // This is map (ByteSet => RegExp); ByteSet is Expr::Byte or Expr::ByteSet,
 // and expresses the condition; RegExp is the derivative under that condition.
@@ -30,7 +31,8 @@ macro_rules! debug {
     };
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct RelevanceCache {
     relevance_cache: HashMap<ExprRef, bool>,
     containment_cache: HashMap<(ExprRef, ExprRef), bool>,

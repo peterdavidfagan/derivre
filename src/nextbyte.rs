@@ -1,8 +1,10 @@
 use crate::HashMap;
 
 use crate::ast::{Expr, ExprRef, ExprSet, NextByte};
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct NextByteCache {
     next_byte_cache: HashMap<ExprRef, NextByte>,
 }

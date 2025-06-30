@@ -15,6 +15,12 @@ pub struct PrettyPrinter {
     has_mapping: bool,
 }
 
+impl Default for PrettyPrinter {
+    fn default() -> Self {
+        Self::new_simple(256)
+    }
+}
+
 impl PrettyPrinter {
     pub fn expr_to_string(&self, exprset: &ExprSet, id: ExprRef, max_len: usize) -> String {
         let mut s = String::new(); // format!("|{}| ", exprset.get_weight(id));

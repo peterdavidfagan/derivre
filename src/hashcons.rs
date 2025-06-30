@@ -4,8 +4,9 @@ use std::hash::{BuildHasher, Hasher};
 use hashbrown::HashTable;
 
 use crate::RandomState;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 struct Element {
     backing_start: u32,
     backing_end: u32,
@@ -20,12 +21,23 @@ impl Element {
 /// A hashconsing data structure for vectors of u32.
 /// Given a vector, it stores it only once and returns a unique id.
 /// The ids are consecutive and start at 0.
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct VecHashCons {
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     hasher: RandomState,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     backing: Vec<u32>,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     elements: Vec<Element>,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     table: HashTable<u32>,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     curr_elt: Element,
 }
 
