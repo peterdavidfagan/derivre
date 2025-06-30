@@ -8,8 +8,10 @@ use crate::HashMap;
 use crate::{hashcons::VecHashCons, pp::PrettyPrinter, simplify::OwnedConcatElement};
 use bytemuck_derive::{Pod, Zeroable};
 use strum::FromRepr;
+use serde::{Deserialize, Serialize};
 
-#[derive(Pod, Zeroable, Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[derive(Pod, Zeroable, Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 #[repr(transparent)]
 pub struct ExprRef(pub(crate) u32);
 
@@ -332,21 +334,54 @@ impl<'a> Expr<'a> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct ExprSet {
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     exprs: VecHashCons,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     expr_weight: Vec<(u32, u32)>,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) alphabet_size: usize,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) alphabet_words: usize,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) digits: [u8; 10],
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) digit_dot: u8,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) cost: u64,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pp: PrettyPrinter,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) optimize: bool,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) unicode_cache: HashMap<Vec<(char, char)>, ExprRef>,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) any_unicode_star: ExprRef,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) any_unicode: ExprRef,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     pub(crate) any_unicode_non_nl: ExprRef,
+}
+
+impl Default for ExprSet {
+    fn default() -> Self {
+        Self::new(256)
+    }
 }
 
 const ATTR_HAS_REPEAT: u32 = 1;
@@ -730,7 +765,8 @@ impl ExprSet {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub enum NextByte {
     /// Transition via any other byte, or EOI leads to a dead state.
     ForcedByte(u8),

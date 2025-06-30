@@ -12,6 +12,7 @@ use crate::{
     pp::PrettyPrinter,
     relevance::RelevanceCache,
 };
+use serde::{Deserialize, Serialize};
 
 const DEBUG: bool = false;
 
@@ -23,7 +24,8 @@ macro_rules! debug {
     };
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct StateID(u32);
 
 impl StateID {
@@ -84,25 +86,43 @@ impl Debug for StateID {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct AlphabetInfo {
     mapping: [u8; 256],
     size: usize,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct Regex {
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     exprs: ExprSet,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     deriv: DerivCache,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     next_byte: NextByteCache,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     relevance: RelevanceCache,
     alpha: AlphabetInfo,
     initial: StateID,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     rx_sets: VecHashCons,
     state_table: Vec<StateID>,
     state_descs: Vec<StateDesc>,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     num_transitions: usize,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     num_ast_nodes: usize,
+    #[serde(skip)]
+    #[cfg_attr(feature = "jsonschema", schemars(skip))]
     max_states: usize,
 }
 

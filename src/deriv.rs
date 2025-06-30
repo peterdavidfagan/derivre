@@ -1,6 +1,7 @@
 use crate::HashMap;
 
 use crate::ast::{Expr, ExprRef, ExprSet};
+use serde::{Deserialize, Serialize};
 
 const DEBUG: bool = false;
 macro_rules! debug {
@@ -12,7 +13,8 @@ macro_rules! debug {
     };
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "jsonschema", derive(schemars::JsonSchema))]
 pub struct DerivCache {
     pub num_deriv: usize,
     state_table: HashMap<(ExprRef, u8), ExprRef>,
